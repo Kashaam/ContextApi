@@ -6,7 +6,6 @@ import Details from "./component/Details";
 
 const App = () => {
   return <div className="h-screen w-full  flex ">
-    <Nav />
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/details/:id" element={<Details />} />
