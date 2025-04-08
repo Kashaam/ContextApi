@@ -7,7 +7,7 @@ const Nav = () => {
   const [products] = useContext(ProductContext);
   let distinctCat =
     products && products.reduce((acc, cv) => [...acc, cv.category], []);
-  distinctCat = [...new Set(distinctCat)];
+  distinctCat = [ ...new Set(distinctCat)];
 
   const color = () => {
     return `rgba(${(Math.random() * 255).toFixed(0)},

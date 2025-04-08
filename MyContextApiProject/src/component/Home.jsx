@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { ProductContext } from "../Contest/Context";
 import Nav from "./Nav";
@@ -6,29 +6,34 @@ import axios from "../Contest/axios";
 
 const Home = () => {
   const [products] = useContext(ProductContext);
-  const { search } = useLocation();
-  const category = decodeURIComponent(search.split("=")[1]);
-  console.log(category);
+ const {search} = useLocation();
+ const category = decodeURIComponent(search.split('=')[1]);
+ 
+ const [filterProducts, setFilterProducts] = useState(null);
+ const getFilterProduct = async ()=>{
+  try {
+    const {data } = await axios.get(`/products/category/${category}`)
+    setFilterProducts(data);
+  } catch (error) {
+    console.log(error);
+  }
+  
 
-  let filterProducts = products && products;
-  const getProductsCategory = async () => {
-    try {
-      const { data } = await axios.get(`./products/category/${category}`);
-      filterProducts = data;
-    } catch (error) {
-      console.log(error);
-    }
-  };
+ }
 
-  useEffect(() => {
-    if (category) getProductsCategory();
-  }, []);
+
+
+ useEffect(()=>{
+  if(!filterProducts || category == "undefined") setFilterProducts(products);
+  if(category != "undefined") getFilterProduct();
+ }, [category, products])
+
 
   return products ? (
     <>
       <Nav />
       <div className=" w-[85%] p-10 flex flex-wrap overflow-x-hidden overflow-y-auto">
-        {products.map((pro, ind) => {
+        {filterProducts &&  filterProducts.map((pro, ind) => {
           return (
             <Link
               key={ind}
@@ -56,3 +61,25 @@ const Home = () => {
 };
 
 export default Home;
+
+
+
+
+// const { search } = useLocation();
+// const category = decodeURIComponent(search.split("=")[1]);
+// console.log(category);
+
+// const [filterProducts, setFilterProducts] = useState(null);
+// const getProductsCategory = async () => {
+//   try {
+//     const { data } = await axios.get(`./products/category/${category}`);
+//     setFilterProducts(data);
+//   } catch (error) {
+//     console.log(error);
+//   }
+// };
+
+// useEffect(() => {
+//   if(!filterProducts || category == "undefined") setFilterProducts(products)
+//   if (category != "undefined") getProductsCategory();
+// }, [category, products]);
